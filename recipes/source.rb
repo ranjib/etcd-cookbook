@@ -10,5 +10,5 @@ end
 
 execute "unpack_go_tarball" do
   command "tar -zxvf #{local_tarball} -C /opt"
-  not_of "test -f /opt/go1.1.2.linux-amd64/Makefile"
+  not_if "test -f /opt/go1.1.2.linux-amd64/Makefile"
 end
