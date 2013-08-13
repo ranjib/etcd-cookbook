@@ -6,12 +6,24 @@
 #
 #
 
+include_recipe 'etcd'
+
 etcd_dir = node["etcd"]["install_path"]
 etcd_data_dir = node["etcd"]["install_path"] + "/data"
 
-include_recipe 'etcd'
+case node['platform_family']
+when 'rhel'
+  config_file = '/etc/sysconfig/etcd'
+  initd_template = 'etcd_init_rhel.erb'
+  include_recipe "etcd::source"
+when 'debian'
+  package "golang"
+  config_file = '/etc/default/etcd'
+  initd_template = 'etcd_init_debian.erb'
+else
+  raise "Unsupported platform family"
+end
 
-package "golang"
 
 directory etcd_dir
 
@@ -27,17 +39,6 @@ execute "build_etcd_binary" do
   environment( :gopath=> etcd_dir)
   command "go install github.com/coreos/etcd"
   not_if "test -f /tmp/foo"
-end
-
-case node['platform_family']
-when 'rhel'
-  config_file = '/etc/sysconfig/etcd'
-  initd_template = 'etcd_init_rhel.erb'
-when 'debian'
-  config_file = '/etc/default/etcd'
-  initd_template = 'etcd_init_debian.erb'
-else
-  raise "Unsupported platform family"
 end
 
 template config_file do
