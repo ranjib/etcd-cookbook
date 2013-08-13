@@ -29,14 +29,14 @@ directory etcd_dir
 
 execute "download_etcd_source" do
   cwd node["etcd"]["install_path"]
-  environment( :gopath=> etcd_dir)
+  environment( :gopath=> etcd_dir, :path=>"/opt/go/bin:#{ENV['PATH']}")
   command "go get github.com/coreos/etcd"
   not_if "test -f /tmp/foo"
 end
 
 execute "build_etcd_binary" do
   cwd node["etcd"]["install_path"]
-  environment( :gopath=> etcd_dir)
+  environment( :gopath=> etcd_dir, :path=>"/opt/go/bin:#{ENV['PATH']}")
   command "go install github.com/coreos/etcd"
   not_if "test -f /tmp/foo"
 end
