@@ -32,7 +32,7 @@ local_tarball = Chef::Config[:file_cache_path] + "/" + tarball_name
 tarball_url = "https://github.com/coreos/etcd/releases/download/v0.1.0/" + tarball_name
 
 remote_file local_tarball do
-  source tarball_name
+  source tarball_url
   not_if "test -f #{local_tarball}"
 end
 
