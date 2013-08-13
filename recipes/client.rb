@@ -2,7 +2,7 @@ chef_gem "etcd"
 include_recipe "etcd"
 
 case node['platform_family']
-when 'rel'
+when 'rhel'
   initd_template = 'etcd_chef_agent_init_rel.erb'
 when 'debian'
   initd_template = 'etcd_chef_agent_init_debian.erb'
