@@ -37,7 +37,7 @@ remote_file local_tarball do
 end
 
 execute "install_etcd_binary" do
-  command "tar -zvfx #{local_tarball} -C #{etcd_dir}"
+  command "tar -zvxf #{local_tarball} -C #{etcd_dir}"
   not_if "test -f #{etcd_dir}/bin/etcd"
 end
 
