@@ -1,8 +1,9 @@
+
 file = 'go1.1.2.linux-amd64.tar.gz'
 tarball_url = 'http://go.googlecode.com/files/' + file
 local_tarball = Chef::Config[:file_cache_path]+"/"+ file
 
-remote_file local_tar_ball do
+remote_file local_tarball do
   source tarball_url
   not_if "test -f #{local_tarball}"
 end
