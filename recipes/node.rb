@@ -27,18 +27,20 @@ end
 
 directory etcd_dir
 
-execute "download_etcd_source" do
-  cwd node["etcd"]["install_path"]
-  command "git clone  https://github.com/coreos/etcd ."
-  not_if "test -f /tmp/foo"
+tarball_name = 'etcd-v0.1.0-Linux.tar.gz'
+local_tarball = Chef::Config[:file_cache_path] + "/" + tarball_name
+tarball_url = "https://github.com/coreos/etcd/releases/download/v0.1.0/" + tarball_name
+
+remote_file local_tarball do
+  source tarball_name
+  not_if "test -f #{local_tarball}"
 end
 
-execute "build_etcd_binary" do
-  cwd node["etcd"]["install_path"]
-  environment( 'PATH'=>"/opt/go/bin:#{ENV['PATH']}")
-  command "bash -c ./build"
-  not_if "test -f /tmp/foo"
+execute "install_etcd_binary" do
+  command "tar -zvfx #{local_tarball} -C #{etcd_dir}"
+  not_if "test -f #{etcd_dir}/bin/etcd"
 end
+
 
 template config_file do
   variables(:port=> 4001, :ipaddress=> '127.0.0.1', :data_dir=>etcd_data_dir)
